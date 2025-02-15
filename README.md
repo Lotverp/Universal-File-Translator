@@ -27,7 +27,12 @@ Questo script è un'applicazione grafica sviluppata in **Python** che permette d
 1️⃣ Avvia l'applicazione eseguendo il file: 🏁
 
   
-```python translate.py ```
+```bash
+
+python translate.py
+
+```
+
 
 2️⃣ Clicca su **"Sfoglia..."** per selezionare il file di testo da tradurre 📂
 
