@@ -21,6 +21,18 @@ Questo script è un'applicazione grafica sviluppata in **Python** che permette d
 - 🎨 Interfaccia utente semplice e interattiva basata su `tkinter`
 
   
+## 📦 Dipendenze
+
+Copia e incolla questi comandi nel terminale per installare le dipendenze:
+
+```bash
+
+pip  install  googletrans==4.0.0-rc1
+
+```
+
+**Python 3.x** e `tkinter` sono necessari (tkinter è incluso in Python).
+
 
 ## 🛠️ Come funziona
 
@@ -45,18 +57,6 @@ python translate.py
 6️⃣ Il file tradotto verrà salvato e il percorso verrà mostrato nell'interfaccia ✅
 
   
-
-## 📦 Dipendenze
-
-Copia e incolla questi comandi nel terminale per installare le dipendenze:
-
-```bash
-
-pip  install  googletrans==4.0.0-rc1
-
-```
-
-**Python 3.x** e `tkinter` sono necessari (tkinter è incluso in Python).
 
   
 
