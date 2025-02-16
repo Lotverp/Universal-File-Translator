@@ -26,8 +26,11 @@ This script is a graphic application developed in ** python ** that allows ** tr
 
 1️⃣ Start the application by performing the file: 🏁
 
+``` Bash
 
-`` `python translate.py` ``
+python translate.py
+
+```
 
 2️⃣ Click on ** "Browse ..." ** To select the text file to be translated 📂
 
