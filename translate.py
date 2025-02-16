@@ -198,7 +198,7 @@ class UniversalTranslatorApp:
         webbrowser.open(paypal_url)
         
     def open_github(self):
-        github_url = "https://github.com/Lotverp/Universal-Text-Translator"
+        github_url = "https://github.com/Lotverp/Universal-File-Translator"
         webbrowser.open(github_url)
 
 if __name__ == '__main__':
