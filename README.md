@@ -48,11 +48,11 @@ python translate.py
 
 Copy and paste these commands in the terminal to install addictions:
 
-`` `Bash
+``` Bash
 
 Pip Install Googletrans == 4.0.0-RC1
 
-`` `
+```
 
 ** Python 3.x ** and `TKinteris are needed (TKinter is included in Python).
 
