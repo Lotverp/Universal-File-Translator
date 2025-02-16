@@ -1,4 +1,4 @@
-# 🌍 Universal File Translator 🇮🇹
+# 🌍 Traduttore Universale di File 
 
   
 
