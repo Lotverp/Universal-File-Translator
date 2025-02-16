@@ -1,4 +1,4 @@
-# 🌍 Universal Translator Files 🇮🇹
+# 🌍 Universal Translator Files
 
 
 
