@@ -2,23 +2,24 @@ import tkinter as tk
 from tkinter import ttk, filedialog, messagebox
 from googletrans import Translator, LANGUAGES
 import os
+import webbrowser
 
 class UniversalTranslatorApp:
     def __init__(self, root):
         self.root = root
         self.root.title("Universal File Translator")
-        self.root.geometry("800x450")
+        self.root.geometry("800x500")
         
         self.translator = Translator()
         self.languages = LANGUAGES
         self.default_font = ('Arial', 10)
         
-        # State variables
+        # Variabili di stato
         self.input_path = ""
         self.output_dir = ""
         self.input_extension = ""
         
-        # GUI control variables
+        # Variabili per controlli grafici
         self.input_file_var = tk.StringVar()
         self.output_name_var = tk.StringVar()
         self.src_lang_var = tk.StringVar(value='auto')
@@ -31,59 +32,55 @@ class UniversalTranslatorApp:
         main_frame = ttk.Frame(self.root, padding=20)
         main_frame.pack(fill='both', expand=True)
         
-        # Input file section
+        # Sezione file di input
         ttk.Label(main_frame, text="Source file:", font=self.default_font).grid(row=0, column=0, sticky='w')
         input_frame = ttk.Frame(main_frame)
         input_frame.grid(row=1, column=0, columnspan=2, sticky='ew', pady=5)
-        
         ttk.Label(input_frame, textvariable=self.input_file_var, width=60, relief="sunken", padding=5).pack(side='left', fill='x', expand=True)
         ttk.Button(input_frame, text="Browse...", command=self.browse_input).pack(side='left', padx=5)
         
-        # Language selection
+        # Sezione di selezione della lingua
         lang_frame = ttk.Frame(main_frame)
         lang_frame.grid(row=2, column=0, columnspan=2, pady=15, sticky='ew')
-        
         ttk.Label(lang_frame, text="Source language:", font=self.default_font).grid(row=0, column=0, sticky='w')
         self.src_combo = ttk.Combobox(lang_frame, textvariable=self.src_lang_var, 
-                                    values=['auto'] + sorted(self.languages.values(), key=lambda x: x.lower()), 
-                                    state='readonly', width=25)
+                                      values=['auto'] + sorted(self.languages.values(), key=lambda x: x.lower()), 
+                                      state='readonly', width=25)
         self.src_combo.grid(row=1, column=0, padx=5, sticky='w')
-        
         ttk.Label(lang_frame, text="Target language:", font=self.default_font).grid(row=0, column=1, sticky='w')
         self.dest_combo = ttk.Combobox(lang_frame, textvariable=self.dest_lang_var, 
-                                      values=sorted(self.languages.values(), key=lambda x: x.lower()), 
-                                      state='readonly', width=25)
+                                       values=sorted(self.languages.values(), key=lambda x: x.lower()), 
+                                       state='readonly', width=25)
         self.dest_combo.grid(row=1, column=1, padx=5, sticky='w')
         
-        # Output section
+        # Sezione output
         ttk.Label(main_frame, text="Output file name (without extension):", font=self.default_font).grid(row=3, column=0, sticky='w', pady=10)
         output_frame = ttk.Frame(main_frame)
         output_frame.grid(row=4, column=0, columnspan=2, sticky='ew')
-        
         self.output_entry = ttk.Entry(output_frame, textvariable=self.output_name_var, width=50)
         self.output_entry.pack(side='left', fill='x', expand=True)
-        
-        # Added directory buttons
         btn_frame = ttk.Frame(output_frame)
         btn_frame.pack(side='left', padx=5)
         ttk.Button(btn_frame, text="Folder...", command=self.browse_output_dir).pack(side='left')
         ttk.Button(btn_frame, text="Copy Directory", command=self.copy_output_dir).pack(side='left', padx=5)
         
-        # Path preview
+        # Anteprima del percorso completo
         ttk.Label(main_frame, text="Full path:", font=self.default_font).grid(row=5, column=0, sticky='w', pady=5)
         self.preview_label = ttk.Label(main_frame, text="", relief="sunken", width=70, padding=5)
         self.preview_label.grid(row=6, column=0, columnspan=2, sticky='w')
         
-        # Translate button
-        ttk.Button(main_frame, text="TRANSLATE FILE", command=self.start_translation, style='Accent.TButton').grid(row=7, column=0, columnspan=2, pady=20)
+        # Pulsante per tradurre il file (stesso stile dei restanti tasti)
+        ttk.Button(main_frame, text="TRANSLATE FILE", command=self.start_translation).grid(row=7, column=0, columnspan=2, pady=20)
         
-        # Status bar
+        # Riquadro per i pulsanti di donazione e GitHub
+        bottom_frame = ttk.Frame(main_frame)
+        bottom_frame.grid(row=8, column=0, columnspan=2, pady=10, sticky='ew')
+        ttk.Button(bottom_frame, text="Buy me a coffee", command=self.open_paypal).pack(side='left', padx=5)
+        ttk.Button(bottom_frame, text="GitHub", command=self.open_github).pack(side='left', padx=5)
+        
+        # Barra di stato
         self.status_bar = ttk.Label(self.root, text="Ready", relief='sunken', padding=5)
         self.status_bar.pack(side='bottom', fill='x')
-        
-        # Style
-        self.style = ttk.Style()
-        self.style.configure('Accent.TButton', font=('Arial', 10, 'bold'), foreground='white', background='#007ACC')
         
     def setup_bindings(self):
         self.output_name_var.trace_add('write', self.update_preview)
@@ -112,7 +109,7 @@ class UniversalTranslatorApp:
         if self.output_dir:
             self.root.clipboard_clear()
             self.root.clipboard_append(self.output_dir)
-            self.root.update()  # Keep clipboard content after window closes
+            self.root.update()  # Mantiene il contenuto negli appunti anche dopo la chiusura della finestra
             messagebox.showinfo("Info", "Directory path copied to clipboard!")
         else:
             messagebox.showwarning("Warning", "No directory selected!")
@@ -126,14 +123,14 @@ class UniversalTranslatorApp:
             
     def validate_languages(self):
         try:
-            # Validate target language
+            # Valida la lingua di destinazione
             dest_lang = self.dest_lang_var.get()
             dest_code = [k for k, v in self.languages.items() if v.lower() == dest_lang.lower()]
             if not dest_code:
                 messagebox.showerror("Error", f"Invalid target language: {dest_lang}")
                 return None
                 
-            # Validate source language
+            # Valida la lingua sorgente
             src_lang = self.src_lang_var.get()
             if src_lang.lower() == 'auto':
                 return ('auto', dest_code[0])
@@ -151,7 +148,7 @@ class UniversalTranslatorApp:
             
     def start_translation(self):
         try:
-            # Preliminary validation
+            # Validazione preliminare
             if not self.input_path:
                 messagebox.showwarning("Warning", "Select a file to translate!")
                 return
@@ -160,7 +157,7 @@ class UniversalTranslatorApp:
                 messagebox.showwarning("Warning", "Enter an output file name!")
                 return
                 
-            # Language validation
+            # Validazione delle lingue
             lang_codes = self.validate_languages()
             if not lang_codes:
                 return
@@ -168,7 +165,7 @@ class UniversalTranslatorApp:
             src_code, dest_code = lang_codes
             output_path = self.preview_label.cget("text")
             
-            # Read file content
+            # Lettura del contenuto del file
             try:
                 with open(self.input_path, 'r', encoding='utf-8', errors='replace') as f:
                     content = f.read()
@@ -176,13 +173,12 @@ class UniversalTranslatorApp:
                 messagebox.showerror("Read Error", f"Could not read file:\n{str(e)}")
                 return
                 
-            # Perform translation
+            # Traduzione
             self.status_bar.config(text="Translating...")
             self.root.update()
-            
             translated = self.translator.translate(content, src=src_code, dest=dest_code)
             
-            # Save translated file
+            # Salvataggio del file tradotto
             try:
                 with open(output_path, 'w', encoding='utf-8') as f:
                     f.write(translated.text)
@@ -196,6 +192,14 @@ class UniversalTranslatorApp:
         except Exception as e:
             messagebox.showerror("Error", f"Translation error:\n{str(e)}")
             self.status_bar.config(text="Error")
+    
+    def open_paypal(self):
+        paypal_url = "https://www.paypal.com/paypalme/GabrielPolverini"
+        webbrowser.open(paypal_url)
+        
+    def open_github(self):
+        github_url = "https://github.com/Lotverp/Universal-Text-Translator"
+        webbrowser.open(github_url)
 
 if __name__ == '__main__':
     root = tk.Tk()
